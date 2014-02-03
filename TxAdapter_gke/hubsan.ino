@@ -310,8 +310,8 @@ static void hubsanBuildPacket(void) {
   } 
   else { // assumes Hubsan uses -128/+127 for all channels except throttle
     packet[9] = 0x02;
-    if(rcData[AUX1] >= 0) packet[9] |= FLAG_LED;
-    if(rcData[AUX2] >= 0) packet[9] |= FLAG_FLIP;
+    if(rcData[AUX1] >= 50) packet[9] |= FLAG_LED;
+    if(rcData[AUX2] >= 50) packet[9] |= FLAG_FLIP;
   }
 
   packet[10] = 0x64;
