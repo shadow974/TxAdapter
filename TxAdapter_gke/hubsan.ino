@@ -199,7 +199,7 @@ static void hubsanUpdateTelemetry(void) {
         debug[2] = packet[7] << 8 | packet[8]; 
         accData[YAW] = packet[Z_ACC_MSB] << 8 | packet[Z_ACC_LSB]; // OK
         gyroData[YAW] = packet[YAW_GYRO_MSB] << 8 | packet[YAW_GYRO_LSB]; 
-        batteryVolts = packet[VBAT];
+        // batteryVolts = packet[VBAT];    // only in 0xe1 Packet! (http://www.deviationtx.com/forum/protocol-development/1848-new-hubsan-upgraded-version-on-the-way?start=340#17668)
         break;
       case 0xe1:
         accData[PITCH] = packet[PITCH_ACC_MSB] << 8 | packet[PITCH_ACC_LSB];  
@@ -456,7 +456,7 @@ static void hubsanInit(void) {
     checkLEDFlash();
 
   if (DEBUG) Serial.println("Hubsan Setup OK");
-  
+
   sessionID = random();
   chan = hubsanAllowedChannels[random() % sizeof(hubsanAllowedChannels)];
   hubsanSetBindState(0xffffffff);
@@ -465,6 +465,7 @@ static void hubsanInit(void) {
   hubsanVTXFreq = DEFAULT_VTX_FREQ;
 
 } // hubsanInit
+
 
 
 
