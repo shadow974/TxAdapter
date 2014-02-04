@@ -35,7 +35,8 @@
 
 #define DEBUG false
 #define DEBUG_PROTOCOL false
-#define USING_MW_GUI (!(DEBUG || DEBUG_PROTOCOL)) 
+#define USING_FRSKY true
+#define USING_MW_GUI (!(DEBUG || DEBUG_PROTOCOL || USING_FRSKY)) 
 #define SERIAL_BAUD_RATE 57600 // unfortunately 115200 does not work for 8MHz AtMega328
 
 //_______________________________________________________________________________________________

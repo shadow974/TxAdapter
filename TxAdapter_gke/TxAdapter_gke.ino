@@ -88,7 +88,7 @@ inline void LEDs(boolean s) {
 
 void checkAlarm(void) {
   enum { 
-    buzzerWait, buzzerOn, buzzerOff                                   };
+    buzzerWait, buzzerOn, buzzerOff                                     };
   static uint8_t buzzerState = buzzerWait;
   static uint32_t UpdatemS;
   boolean alarmActive;
@@ -177,7 +177,10 @@ void setProtocol(void) {
 void setup() {
   uint8_t p;
 
-  Serial.begin(57600);//SERIAL_BAUD_RATE);
+  if (!USING_FRSKY) 
+    Serial.begin(SERIAL_BAUD_RATE);
+  else
+    frskyInit();
 
   pinMode(LED_PIN, OUTPUT); 
   pinMode(LED2_PIN, OUTPUT);
@@ -214,6 +217,8 @@ void loop() {
     checkBattery();
     if (USING_MW_GUI)
       serialCom();
+    if (USING_FRSKY)
+      frskyUpdate();
   }
 
   if (cppmNewValues) 
@@ -227,6 +232,7 @@ void loop() {
   checkLEDFlash();
 
 } // loop
+
 
 
 

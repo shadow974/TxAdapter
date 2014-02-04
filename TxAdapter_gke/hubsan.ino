@@ -190,7 +190,7 @@ static void hubsanUpdateTelemetry(void) {
     intervalmS = millis() - lastUpdatemS;
     lastUpdatemS = millis();
 
-    if (USING_MW_GUI)
+    if (USING_MW_GUI || USING_FRSKY)
       switch (packet[0]) {
       case 0xe0:
         estAltitude = -(packet[ROC_MSB] << 8 | packet[ROC_LSB]);// 1,2
