@@ -53,7 +53,7 @@ uint8_t packet[21];
 int16_t rcData[RC_CHANS] = {
   0,};
 
-uint8_t batteryVolts = 255;
+uint8_t batteryVolts = 0;
 uint8_t rssiBackChannel = 0;
 int16_t rssi = 0;
 int16_t throttleLVCScale = 1024;
@@ -214,7 +214,7 @@ void loop() {
   uint8_t chan;
 
   if (currProtocol == hubsan) {
-    checkBattery();
+    //checkBattery();   //Initial Value at 0; instant disabling throttle. Need to fix later...
     if (USING_MW_GUI)
       serialCom();
     if (USING_FRSKY)

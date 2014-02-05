@@ -55,7 +55,7 @@ void smartportIdle()
   Serial.write(0x7e);
 }
 
-void smartportSendFrame(uint8_t a1, uint8_t a2 ,uint8_t rssi, uint8_t prof)
+void smartportSendFrame()
 {
   uint8_t buf[9];
   frskySchedule = (frskySchedule + 1) % 36;
@@ -65,22 +65,30 @@ void smartportSendFrame(uint8_t a1, uint8_t a2 ,uint8_t rssi, uint8_t prof)
   case 0: // SWR
     buf[2] = 0x05;
     buf[3] = 0xf1;
-    buf[4] = prof + 1;
+    buf[4] = 0;
     break;
   case 1: // RSSI
     buf[2] = 0x01;
     buf[3] = 0xf1;
-    buf[4] = (uint16_t)(rssi) * 100 / 256;
+    buf[4] = 100;
     break;
   case 2: //BATT
     buf[2] = 0x04;
     buf[3] = 0xf1;
-    buf[4] = a1;
+    buf[4] = batteryVolts; //Set Range to ~25-26 Volts. Need to check maths here!
     break;
   case 3: //A2
     buf[2] = 0x03;
     buf[3] = 0xf1;
-    buf[4] = a2;
+    buf[4] = 0;
+    break;
+  case 4: // ACC-Test  (this gives me a reading of 40.96; have no idea how it works!)   // buf5=0x10 = 4096    buf4=0x01 = 0.01   buf4=0x44 = 2.55    buf4+5=0xff = -0.01
+    buf[2] = 0x00;
+    buf[3] = 0x07;
+    buf[4] = 0xff;
+    buf[5] = 0xff;
+    buf[6] = 0x00;
+    buf[7] = 0x00;
     break;
   default:
     smartportIdle();
@@ -94,7 +102,7 @@ void frskyUpdate()
 {
   uint32_t now = micros();
   if ((now - frskyLast) > SMARTPORT_INTERVAL) {
-    smartportSendFrame(batteryVolts, 0, rssiBackChannel, 0);
+    smartportSendFrame();
     frskyLast = now;
   }
 }
