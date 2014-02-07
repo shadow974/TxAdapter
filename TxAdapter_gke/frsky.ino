@@ -58,16 +58,19 @@ void smartportIdle()
 void smartportSendFrame()
 {
   uint8_t buf[9];
+  
+  uint8_t * bytes;
+  
   frskySchedule = (frskySchedule + 1) % 36;
   buf[0] = 0x98;
   buf[1] = 0x10;
   switch (frskySchedule) {
-  case 0: // SWR
+  case 0: // SWR (fake value = 0)
     buf[2] = 0x05;
     buf[3] = 0xf1;
     buf[4] = 0;
     break;
-  case 1: // RSSI
+  case 1: // RSSI (fake value = 100)
     buf[2] = 0x01;
     buf[3] = 0xf1;
     buf[4] = 100;
@@ -77,18 +80,41 @@ void smartportSendFrame()
     buf[3] = 0xf1;
     buf[4] = batteryVolts; //Set Range to ~25-26 Volts. Need to check maths here!
     break;
-  case 3: //A2
-    buf[2] = 0x03;
-    buf[3] = 0xf1;
-    buf[4] = 0;
+  case 3: //RPM (telemetry_ahead debug)
+    buf[2] = 0x00;
+    buf[3] = 0x05;
+    bytes = (uint8_t *) &telemetry_ahead;
+    buf[4] = bytes[0];
+    buf[5] = bytes[1];
+    buf[6] = bytes[2];
+    buf[7] = bytes[3];
     break;
-  case 4: // ACC-Test  (this gives me a reading of 40.96; have no idea how it works!)   // buf5=0x10 = 4096    buf4=0x01 = 0.01   buf4=0x44 = 2.55    buf4+5=0xff = -0.01
+  case 4: // ACC-ROLL
     buf[2] = 0x00;
     buf[3] = 0x07;
-    buf[4] = 0xff;
-    buf[5] = 0xff;
-    buf[6] = 0x00;
-    buf[7] = 0x00;
+    bytes = (uint8_t *) &accData[ROLL];
+    buf[4] = bytes[0];
+    buf[5] = bytes[1];
+    buf[6] = bytes[2];
+    buf[7] = bytes[3];
+    break;
+  case 5: // ACC-PITCH
+    buf[2] = 0x10;
+    buf[3] = 0x07;
+    bytes = (uint8_t *) &accData[PITCH];
+    buf[4] = bytes[0];
+    buf[5] = bytes[1];
+    buf[6] = bytes[2];
+    buf[7] = bytes[3];
+    break;
+  case 6: // ACC-PITCH
+    buf[2] = 0x20;
+    buf[3] = 0x07;
+    bytes = (uint8_t *) &accData[YAW];
+    buf[4] = bytes[0];
+    buf[5] = bytes[1];
+    buf[6] = bytes[2];
+    buf[7] = bytes[3];
     break;
   default:
     smartportIdle();
@@ -102,6 +128,7 @@ void frskyUpdate()
 {
   uint32_t now = micros();
   if ((now - frskyLast) > SMARTPORT_INTERVAL) {
+    telemetry_ahead++;
     smartportSendFrame();
     frskyLast = now;
   }

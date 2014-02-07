@@ -190,6 +190,7 @@ static void hubsanUpdateTelemetry(void) {
     intervalmS = millis() - lastUpdatemS;
     lastUpdatemS = millis();
 
+    telemetry_ahead = 0;
     if (USING_MW_GUI || USING_FRSKY)
       switch (packet[0]) {
       case 0xe0:

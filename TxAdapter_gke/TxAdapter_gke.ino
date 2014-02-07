@@ -75,6 +75,8 @@ int16_t angle[3] = {
 int16_t debug[4] = {
   0};
 
+uint32_t telemetry_ahead = 100;
+
 void Probe(void) {
   digitalWrite(PROBE_PIN, LOW);
   digitalWrite(PROBE_PIN, HIGH);
@@ -218,7 +220,7 @@ void loop() {
     if (USING_MW_GUI)
       serialCom();
     if (USING_FRSKY)
-      frskyUpdate();
+      if (telemetry_ahead < 50) frskyUpdate();
   }
 
   if (cppmNewValues) 
